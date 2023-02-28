@@ -2,13 +2,16 @@ name: Build & Deploy Blog
 
 on:
   workflow_dispatch:
-    branch:
+  push:
+    branches:
       - source
+
 jobs:
-  Build: 
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v1
         with:
           ref: source
@@ -20,16 +23,9 @@ jobs:
         env:
           ACTION_DEPLOY_KEY: ${{ secrets.ACCESS_TOKEN }}
         run: |
-          mkdir -p ~/.ssh/
-          echo "$ACTION_DEPLOY_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          git config --global user.email "guestljz@163.com"
-          git config --global user.name "MonthlyGirl"
           npm install hexo-cli -g
           npm install
       - name: Hexo deploy
         run: |
           hexo clean
           hexo d
-      
