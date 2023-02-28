@@ -8,7 +8,7 @@ jobs:
   Build: 
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
+      - name: Checkout
         uses: actions/checkout@v1
         with:
           ref: source
