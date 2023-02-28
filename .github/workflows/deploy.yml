@@ -1,6 +1,7 @@
 name: Build & Deploy Blog
+
 on:
-  workflows:
+  workflow_dispatch:
     branch:
       - source
 jobs:
