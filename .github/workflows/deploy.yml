@@ -11,14 +11,14 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v1
         with:
-          ref: save
+          ref: source
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
           version: ${{ matrix.node_version }}
       - name: Setup hexo
         env:
-          ACTION_DEPLOY_KEY: ${{ secrets.hexo_deploy_pri }}
+          ACTION_DEPLOY_KEY: ${{ secrets.ACCESS_TOKEN }}
         run: |
           mkdir -p ~/.ssh/
           echo "$ACTION_DEPLOY_KEY" > ~/.ssh/id_rsa
