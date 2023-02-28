@@ -42,7 +42,7 @@ copy:
 # formal:
 #   icon: link || the description
 social:
-  fab fa-github: https://github.com/guestljz || Github
+  fab fa-github: https://github.com/MonthlyGirl || Github
   fa fa-envelope: mailto:guestljz@163.com || Email
   fas fa-music: https://music.163.com/#/user/home?id=372901002 || Music
   
@@ -381,7 +381,7 @@ footer:
   owner:
     enable: true
     since: 2020
-  custom_text: Hi, <a href="https://guestljz.gitee.io/">月刊少女野崎君</a>!
+  custom_text: Hi, <a href="https://monthlygirl.github.io/">月刊少女野崎君</a>!
 
   copyright: true # Copyright of theme and framework
   ICP: # Chinese ICP License
@@ -486,7 +486,7 @@ tag_ui: # 留空或 index
 # Website Background (設置網站背景)
 # can set it to color or image (可設置圖片 或者 顔色)
 # The formal of image: url(http://xxxxxx.com/xxx.jpg)
-background: https://bing.ioliu.cn/v1/rand?room=Wallpaper_1920x1080
+background: https://wechatapppro-1252524126.cdn.xiaoeknow.com/appAKLWLitn7978/image/b_u_5b2225aa46488_oGKN7IvA/leo7bb1w08f6.jpg?imageView2/2/w/200/q/60
 
 # Footer Background
 footer_bg: false
