@@ -1,0 +1,3 @@
+.hide-block>a.hide-button.open, .hide-inline>a.hide-button.open {
+    display: inline-block;
+}
