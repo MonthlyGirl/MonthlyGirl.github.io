@@ -6,11 +6,11 @@ body {
     cursor: url(https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/Hexo/img/default.cur),
         default;
 }
-a,
-img {
-    cursor: url(https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/Hexo/img/pointer.cur),
-        default;
-}
+/*a,*/
+/*img {*/
+/*    cursor: url(https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/Hexo/img/pointer.cur),*/
+/*        default;*/
+/*}*/
 /* 背景图片 */
 #web_bg {
    background-image: url('../img/bg1.png');
@@ -29,7 +29,6 @@ img {
 }
 /* 所有背景（包括首页卡片、文章页、页面页等） */
 #aside_content .card-widget,
-#recent-posts>.recent-post-item,
 .layout_page>div:first-child:not(.recent-posts),
 .layout_post>#page,
 .layout_post>#post,

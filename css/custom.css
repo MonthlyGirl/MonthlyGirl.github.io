@@ -11,7 +11,7 @@
   font-display: swap;
 }
 
-body{
+body, canvas{
   font-family:Candyhome;
 }
 
