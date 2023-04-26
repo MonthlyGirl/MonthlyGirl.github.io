@@ -13,7 +13,7 @@ img {
 }
 /* 背景图片 */
 #web_bg {
-   background-image: url(https://api.cyrilstudio.top/bing/image.php/bing?day=-1);
+   background-image: url('../img/bg1.png');
 }
 /* 版心透明 */
 .card-widget{
@@ -60,7 +60,7 @@ img {
   background-color: rgba(255, 255, 255, 0);
 }
 #page-header.full_page{
-height: 800px;
+height: 400px;
 }
 
 /* 滚动条优化 */
