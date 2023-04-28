@@ -391,13 +391,6 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/tags/Webpack/</loc>
-    <lastmod>2023-04-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://monthlygirl.github.io/tags/Hook/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -413,6 +406,13 @@
   
   <url>
     <loc>https://monthlygirl.github.io/tags/Redux/</loc>
+    <lastmod>2023-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/tags/Webpack/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -456,14 +456,14 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/categories/webpack/</loc>
+    <loc>https://monthlygirl.github.io/categories/React/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/categories/React/</loc>
+    <loc>https://monthlygirl.github.io/categories/webpack/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
