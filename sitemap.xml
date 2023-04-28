@@ -272,13 +272,6 @@
 
   
   <url>
-    <loc>https://monthlygirl.github.io/tags/CSS/</loc>
-    <lastmod>2023-04-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://monthlygirl.github.io/tags/HTML/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -286,7 +279,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/tags/vue3-0-Compiler/</loc>
+    <loc>https://monthlygirl.github.io/tags/CSS/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -294,6 +287,13 @@
   
   <url>
     <loc>https://monthlygirl.github.io/tags/HTTP-HTTPS/</loc>
+    <lastmod>2023-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/tags/vue3-0-Compiler/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -342,13 +342,6 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/tags/eventLoop/</loc>
-    <lastmod>2023-04-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://monthlygirl.github.io/tags/DOM0%E7%BA%A7-DOM2%E7%BA%A7/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
@@ -357,6 +350,13 @@
   
   <url>
     <loc>https://monthlygirl.github.io/tags/javascript/</loc>
+    <lastmod>2023-04-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/tags/eventLoop/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -421,14 +421,14 @@
 
   
   <url>
-    <loc>https://monthlygirl.github.io/categories/Vue/</loc>
+    <loc>https://monthlygirl.github.io/categories/HTTP/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/categories/HTTP/</loc>
+    <loc>https://monthlygirl.github.io/categories/Vue/</loc>
     <lastmod>2023-04-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
