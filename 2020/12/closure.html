@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>闭包 | 月刊少女野崎君のBlog</title><meta name="keywords" content="闭包"><meta name="author" content="月刊少女野崎君"><meta name="copyright" content="月刊少女野崎君"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="01&#x2F;什么是闭包?  理解闭包需要先了解  作用域 作用域链 垃圾回收机制    作用域:作用域是指当前执行代码对变量的访问权限 分为静态作用域和动态作用域,js采用静态作用域  其区别是:静态作用域:函数作用域是在函数定义时决定,动态作用域:函数作用域是在函数调用时定义   es6的块级作用域:通过let 和 const 声明,只能在声明变量所在的作用域里使用,外部无法使用  作用域链:内层作用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="闭包">
+<meta property="og:url" content="https://monthlygirl.github.io/2020/12/closure.html">
+<meta property="og:site_name" content="月刊少女野崎君のBlog">
+<meta property="og:description" content="01&#x2F;什么是闭包?  理解闭包需要先了解  作用域 作用域链 垃圾回收机制    作用域:作用域是指当前执行代码对变量的访问权限 分为静态作用域和动态作用域,js采用静态作用域  其区别是:静态作用域:函数作用域是在函数定义时决定,动态作用域:函数作用域是在函数调用时定义   es6的块级作用域:通过let 和 const 声明,只能在声明变量所在的作用域里使用,外部无法使用  作用域链:内层作用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bing.ioliu.cn/v1/rand?room=19990">
+<meta property="article:published_time" content="2020-12-22T21:35:58.000Z">
+<meta property="article:modified_time" content="2020-12-22T21:35:58.000Z">
+<meta property="article:author" content="月刊少女野崎君">
+<meta property="article:tag" content="闭包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bing.ioliu.cn/v1/rand?room=19990"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://monthlygirl.github.io/2020/12/closure"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '闭包',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-22 21:35:58'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="月刊少女野崎君のBlog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div></div><hr/></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">月刊少女野崎君のBlog</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">闭包</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-22T21:35:58.000Z" title="发表于 2020-12-22 21:35:58">2020-12-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-22T21:35:58.000Z" title="更新于 2020-12-22 21:35:58">2020-12-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/JavaScript/">JavaScript</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="闭包"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h3 id="01-什么是闭包"><a href="#01-什么是闭包" class="headerlink" title="01/什么是闭包?"></a>01/什么是闭包?</h3><p>  理解闭包需要先了解</p>
+<ul>
+<li>作用域</li>
+<li>作用域链</li>
+<li>垃圾回收机制 </li>
+</ul>
+<ol>
+<li><p>作用域:作用域是指当前执行代码对变量的访问权限 分为静态作用域和动态作用域,js采用静态作用域</p>
+<ul>
+<li>其区别是:静态作用域:函数作用域是在函数定义时决定,动态作用域:函数作用域是在函数调用时定义</li>
+</ul>
+</li>
+<li><p>es6的块级作用域:通过let 和 const 声明,只能在声明变量所在的作用域里使用,外部无法使用</p>
+</li>
+<li><p>作用域链:内层作用域访问一个变量,会先在当前作用域的父级找,如果没找到,在往上一层找,直到找到全局,如果还没有就宣布放弃,这种一层一层向上的关系,就是作用域链,即以链式的方式访问变量</p>
+<p>由此得到一个问题,如何让全局作用域访问局部作用域中的变量   —&gt;闭包</p>
+<h3 id="02-闭包"><a href="#02-闭包" class="headerlink" title="02/闭包"></a>02/闭包</h3></li>
+</ol>
+<ul>
+<li><p>闭包的作用:</p>
+<ol>
+<li>读取函数内部的变量,让全局访问局部变量的函数</li>
+<li>让这些变量始终保存在内存里</li>
+</ol>
+</li>
+<li><p>如何让这些变量始终保存内存里–&gt;采用闭包函数,函数中嵌套着另一个函数</p>
+</li>
+<li><p>闭包函数:会破坏正常的垃圾回收机制,从而改变变量访问的正常机制,延长变量的生命周期</p>
+</li>
+<li><p>闭包延长变量的生命周期</p>
+<ul>
+<li>闭包函数是在函数中嵌套着另外一个函数,这个函数在外部被调用, 所以内存不会被回收</li>
+</ul>
+</li>
+<li><p>简单来说,函数中的内部函数一旦被调用,浏览器就不会回收函数所创建的内容</p>
+<h3 id="03-垃圾回收机制"><a href="#03-垃圾回收机制" class="headerlink" title="03/垃圾回收机制"></a>03/垃圾回收机制</h3></li>
+<li><p>垃圾回收机制:会自动释放内存,就是说一个函数执行完毕,内存中的空间会被释放,再一次调用的时候,函数内部会被重新赋值</p>
+<h3 id="04-闭包的特点"><a href="#04-闭包的特点" class="headerlink" title="04/闭包的特点"></a>04/闭包的特点</h3></li>
+<li><p>让全局访问局部变量</p>
+</li>
+<li><p>延长变量的生命周期</p>
+</li>
+<li><p>可能会造成内存泄漏</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">月刊少女野崎君</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://monthlygirl.github.io/2020/12/closure.html">https://monthlygirl.github.io/2020/12/closure.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://monthlygirl.github.io" target="_blank">月刊少女野崎君のBlog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%97%AD%E5%8C%85/">闭包</a></div><div class="post_share"><div class="social-share" data-image="https://bing.ioliu.cn/v1/rand?room=19990" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/HTTP_URL.html"><img class="prev-cover" src="https://bing.ioliu.cn/v1/rand?room=989" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">从浏览器地址栏输入URL到显示页面的经历了什么??</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/Ajax.html"><img class="next-cover" src="https://api.cyrilstudio.top/bing/image.php/bing?day=-1" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Ajax</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">月刊少女野崎君</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#01-%E4%BB%80%E4%B9%88%E6%98%AF%E9%97%AD%E5%8C%85"><span class="toc-number">1.</span> <span class="toc-text">01&#x2F;什么是闭包?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#02-%E9%97%AD%E5%8C%85"><span class="toc-number">2.</span> <span class="toc-text">02&#x2F;闭包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#03-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">3.</span> <span class="toc-text">03&#x2F;垃圾回收机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#04-%E9%97%AD%E5%8C%85%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">04&#x2F;闭包的特点</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/code.html" title="《代码精进之路》学习日志"><img src="https://bing.ioliu.cn/v1/rand?room=sddhj" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《代码精进之路》学习日志"/></a><div class="content"><a class="title" href="/2021/06/code.html" title="《代码精进之路》学习日志">《代码精进之路》学习日志</a><time datetime="2021-06-16T21:19:49.000Z" title="发表于 2021-06-16 21:19:49">2021-06-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/vue3.0.html" title="vue3.0"><img src="https://bing.ioliu.cn/v1/rand?room=22333" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="vue3.0"/></a><div class="content"><a class="title" href="/2021/04/vue3.0.html" title="vue3.0">vue3.0</a><time datetime="2021-04-01T21:59:31.000Z" title="发表于 2021-04-01 21:59:31">2021-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/http-version.html" title="HTTP协议的各个版本"><img src="https://bing.ioliu.cn/v1/rand?room=212093" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HTTP协议的各个版本"/></a><div class="content"><a class="title" href="/2021/03/http-version.html" title="HTTP协议的各个版本">HTTP协议的各个版本</a><time datetime="2021-03-01T20:51:53.000Z" title="发表于 2021-03-01 20:51:53">2021-03-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/JavaScript.html" title="JavaScript"><img src="https://api.cyrilstudio.top/bing/image.php/bing?day=2" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JavaScript"/></a><div class="content"><a class="title" href="/2021/03/JavaScript.html" title="JavaScript">JavaScript</a><time datetime="2021-03-01T13:04:53.000Z" title="发表于 2021-03-01 13:04:53">2021-03-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/Event_Model.html" title="事件模型"><img src="https://api.cyrilstudio.top/bing/image.php/bing?day=7" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="事件模型"/></a><div class="content"><a class="title" href="/2021/03/Event_Model.html" title="事件模型">事件模型</a><time datetime="2021-03-01T13:04:53.000Z" title="发表于 2021-03-01 13:04:53">2021-03-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 月刊少女野崎君</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
