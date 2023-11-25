@@ -20,7 +20,9 @@ h1,h2,h3,h4,h5,h6{
 }
 
 
-
+#categories-chart {
+  overflow: hidden;
+}
 /* #site-title,#post-title,#site-name {
  font-family: 'Rock Salt',cursive;
 } */
