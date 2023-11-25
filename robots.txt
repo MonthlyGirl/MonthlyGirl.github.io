@@ -1,0 +1,14 @@
+# hexo robots.txt
+User-agent: *
+Allow: /
+Allow: /about/
+Allow: /archives/
+Allow: /categories/
+Allow: /tags/
+
+Disallow: /img/
+Disallow: /js/
+Disallow: /css/
+Disallow: /font/
+
+Sitemap: https://monthlygirl.github.io//sitemap.xml
