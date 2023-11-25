@@ -11,4 +11,4 @@ Disallow: /js/
 Disallow: /css/
 Disallow: /font/
 
-Sitemap: https://monthlygirl.github.io//sitemap.xml
+Sitemap: https://monthlygirl.github.io/sitemap.xml
