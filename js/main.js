@@ -556,7 +556,9 @@ $(function () {
     const $lastPushDateItem = $('#last-push-date')
     if ($lastPushDateItem.length) {
       const lastPushDate = $lastPushDateItem.attr('data-lastPushDate')
+      console.log('lastPushDate: ', lastPushDate);
       const diffDay = btf.diffDate(lastPushDate, true)
+      console.log('btf.diffDate: ', btf.diffDate);
       $lastPushDateItem.text(diffDay)
     }
   }
