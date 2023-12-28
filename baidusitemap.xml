@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://monthlygirl.github.io/2023/12/Interview-JavaScript.html</loc>
+    <lastmod>2023-12-24</lastmod>
+  </url>
+  <url>
+    <loc>https://monthlygirl.github.io/2023/12/Interview-Webpack.html</loc>
+    <lastmod>2023-12-24</lastmod>
+  </url>
+  <url>
+    <loc>https://monthlygirl.github.io/2023/12/Interview-CSS.html</loc>
+    <lastmod>2023-12-22</lastmod>
+  </url>
+  <url>
+    <loc>https://monthlygirl.github.io/2023/12/Interview-Vue.html</loc>
+    <lastmod>2023-12-22</lastmod>
+  </url>
+  <url>
+    <loc>https://monthlygirl.github.io/2023/11/Vue%20defineReactive.html</loc>
+    <lastmod>2023-11-26</lastmod>
+  </url>
+  <url>
     <loc>https://monthlygirl.github.io/2023/11/Vue%20source.html</loc>
     <lastmod>2023-11-25</lastmod>
   </url>
   <url>
     <loc>https://monthlygirl.github.io/2023/07/Interview-JS.html</loc>
     <lastmod>2023-07-17</lastmod>
-  </url>
-  <url>
-    <loc>https://monthlygirl.github.io/2023/05/Interview-JS.html</loc>
-    <lastmod>2023-05-10</lastmod>
   </url>
   <url>
     <loc>https://monthlygirl.github.io/2021/06/code.html</loc>
