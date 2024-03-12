@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://monthlygirl.github.io/2024/03/HTTP1.1.html</loc>
+    
+    <lastmod>2024-03-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://monthlygirl.github.io/2024/03/HTTP_PARSE.html</loc>
     
     <lastmod>2024-03-12</lastmod>
@@ -708,6 +717,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E3%80%81HTTP/</loc>
+    <lastmod>2024-03-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -739,13 +755,6 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/categories/Ajax/</loc>
-    <lastmod>2024-03-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://monthlygirl.github.io/categories/JavaScript/</loc>
     <lastmod>2024-03-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -761,13 +770,6 @@
   
   <url>
     <loc>https://monthlygirl.github.io/categories/webpack/</loc>
-    <lastmod>2024-03-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://monthlygirl.github.io/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/</loc>
     <lastmod>2024-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
