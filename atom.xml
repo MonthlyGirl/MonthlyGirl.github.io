@@ -6,7 +6,7 @@
   <link href="https://monthlygirl.github.io/atom.xml" rel="self"/>
   
   <link href="https://monthlygirl.github.io/"/>
-  <updated>2024-01-28T08:37:07.000Z</updated>
+  <updated>2024-03-12T12:49:16.000Z</updated>
   <id>https://monthlygirl.github.io/</id>
   
   <author>
@@ -15,6 +15,56 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从浏览器地址栏输入URL到显示页面的经历了什么?? -- 渲染过程</title>
+    <link href="https://monthlygirl.github.io/2024/03/HTTP_PARSE.html"/>
+    <id>https://monthlygirl.github.io/2024/03/HTTP_PARSE.html</id>
+    <published>2024-03-12T12:49:16.000Z</published>
+    <updated>2024-03-12T12:49:16.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>上一节介绍了浏览器<code>解析</code>的过程,其中包含<code>构建DOM</code>、<code>样式计算</code>和<code>构建布局树</code>。</p><p>接下来就来拆解下一个过程——<code>渲染</code>。分为以下几个步骤:</p><ul><li>建立<code>图层树</code>(<code>Layer Tree</code>)</li><li>生成<code>绘制列表</code></li><li>生成<code>图块</code>并<code>栅格化</code></li><li>显示器显示内容</li></ul><h2 id="一、建图层树"><a href="#一、建图层树" class="headerlink" title="一、建图层树"></a>一、建图层树</h2><p>如果你觉得现在<code>DOM节点</code>也有了，样式和位置信息也都有了，可以开始绘制页面了，那你就错了。</p><p>因为你考虑掉了另外一些复杂的场景，比如3D动画如何呈现出变换效果，当元素含有层叠上下文时如何控制显示和隐藏等等。</p><p>为了解决如上所述的问题，浏览器在构建完<code>布局树</code>之后，还会对特定的节点进行分层，构建一棵<code>图层树</code>(<code>Layer Tree</code>)。</p><p>那这棵图层树是根据什么来构建的呢？</p><p>一般情况下，节点的图层会默认属于父亲节点的图层(这些图层也称为<strong>合成层</strong>)。那什么时候会提升为一个单独的合成层呢？</p><p>有两种情况需要分别讨论，一种是<strong>显式合成</strong>，一种是<strong>隐式合成</strong>。</p><h3 id="显式合成"><a href="#显式合成" class="headerlink" title="显式合成"></a>显式合成</h3><p>下面是<code>显式合成</code>的情况:</p><p>一、 拥有<strong>层叠上下文</strong>的节点。</p><p>层叠上下文也基本上是有一些特定的CSS属性创建的，一般有以下情况:</p><ol><li>HTML根元素本身就具有层叠上下文。</li><li>普通元素设置<strong>position不为static</strong>并且<strong>设置了z-index属性</strong>，会产生层叠上下文。</li><li>元素的 <strong>opacity</strong> 值不是 1</li><li>元素的 <strong>transform</strong> 值不是 none</li><li>元素的 <strong>filter</strong> 值不是 none</li><li>元素的 <strong>isolation</strong> 值是isolate</li><li><strong>will-change</strong>指定的属性值为上面任意一个。(will-change的作用后面会详细介绍)</li></ol><p>二、需要<strong>剪裁</strong>的地方。</p><p>比如一个div，你只给他设置 100 * 100 像素的大小，而你在里面放了非常多的文字，那么超出的文字部分就需要被剪裁。当然如果出现了滚动条，那么滚动条会被单独提升为一个图层。</p><h3 id="隐式合成"><a href="#隐式合成" class="headerlink" title="隐式合成"></a>隐式合成</h3><p>接下来是<code>隐式合成</code>，简单来说就是<code>层叠等级低</code>的节点被提升为单独的图层之后，那么<code>所有层叠等级比它高</code>的节点<strong>都会</strong>成为一个单独的图层。</p><p>这个隐式合成其实隐藏着巨大的风险，如果在一个大型应用中，当一个<code>z-index</code>比较低的元素被提升为单独图层之后，层叠在它上面的的元素统统都会被提升为单独的图层，可能会增加上千个图层，大大增加内存的压力，甚至直接让页面崩溃。这就是<strong>层爆炸</strong>的原理。这里有一个具体的例子，<a href="https://segmentfault.com/a/1190000014520786">点击打开</a>。</p><p>值得注意的是，当需要<code>repaint</code>时，只需要<code>repaint</code>本身，而不会影响到其他的层。</p><h2 id="二、生成绘制列表"><a href="#二、生成绘制列表" class="headerlink" title="二、生成绘制列表"></a>二、生成绘制列表</h2><p>接下来渲染引擎会将图层的绘制拆分成一个个绘制指令，比如先画背景、再描绘边框……然后将这些指令按顺序组合成一个待绘制列表，相当于给后面的绘制操作做了一波计划。</p><p>这里我以百度首页为例，大家可以在 Chrome 开发者工具中在设置栏中展开 <code>more tools</code>, 然后选择<code>Layers</code>面板，就能看到下面的绘制列表:</p><h2 id="三、生成图块和生成位图"><a href="#三、生成图块和生成位图" class="headerlink" title="三、生成图块和生成位图"></a>三、生成图块和生成位图</h2><p>现在开始绘制操作，实际上在渲染进程中绘制操作是由专门的线程来完成的，这个线程叫<strong>合成线程</strong>。</p><p>绘制列表准备好了之后，渲染进程的主线程会给<code>合成线程</code>发送<code>commit</code>消息，把绘制列表提交给合成线程。接下来就是合成线程一展宏图的时候啦。</p><p>首先，考虑到视口就这么大，当页面非常大的时候，要滑很长时间才能滑到底，如果要一口气全部绘制出来是相当浪费性能的。因此，合成线程要做的第一件事情就是将图层<strong>分块</strong>。这些块的大小一般不会特别大，通常是 256 * 256 或者 512 * 512 这个规格。这样可以大大加速页面的首屏展示。</p><p>因为后面图块数据要进入 GPU 内存，考虑到浏览器内存上传到 GPU 内存的操作比较慢，即使是绘制一部分图块，也可能会耗费大量时间。针对这个问题，Chrome 采用了一个策略: 在首次合成图块时只采用一个<strong>低分辨率</strong>的图片，这样首屏展示的时候只是展示出低分辨率的图片，这个时候继续进行合成操作，当正常的图块内容绘制完毕后，会将当前低分辨率的图块内容替换。这也是 Chrome 底层优化首屏加载速度的一个手段。</p><p>顺便提醒一点，渲染进程中专门维护了一个<strong>栅格化线程池</strong>，专门负责把<strong>图块</strong>转换为<strong>位图数据</strong>。</p><p>然后合成线程会选择视口附近的<strong>图块</strong>，把它交给<strong>栅格化线程池</strong>生成位图。</p><p>生成位图的过程实际上都会使用 GPU 进行加速，生成的位图最后发送给<code>合成线程</code>。</p><h2 id="四、显示器显示内容"><a href="#四、显示器显示内容" class="headerlink" title="四、显示器显示内容"></a>四、显示器显示内容</h2><p>栅格化操作完成后，<strong>合成线程</strong>会生成一个绘制命令，即”DrawQuad”，并发送给浏览器进程。</p><p>浏览器进程中的<code>viz组件</code>接收到这个命令，根据这个命令，把页面内容绘制到内存，也就是生成了页面，然后把这部分内存发送给显卡。为什么发给显卡呢？我想有必要先聊一聊显示器显示图像的原理。</p><p>无论是 PC 显示器还是手机屏幕，都有一个固定的刷新频率，一般是 60 HZ，即 60 帧，也就是一秒更新 60 张图片，一张图片停留的时间约为 16.7 ms。而每次更新的图片都来自显卡的<strong>前缓冲区</strong>。而显卡接收到浏览器进程传来的页面后，会合成相应的图像，并将图像保存到<strong>后缓冲区</strong>，然后系统自动将<code>前缓冲区</code>和<code>后缓冲区</code>对换位置，如此循环更新。</p><p>看到这里你也就是明白，当某个动画大量占用内存的时候，浏览器生成图像的时候会变慢，图像传送给显卡就会不及时，而显示器还是以不变的频率刷新，因此会出现卡顿，也就是明显的掉帧现象。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;上一节介绍了浏览器&lt;code&gt;解析&lt;/code&gt;的过程,其中包含&lt;code&gt;构建DOM&lt;/code&gt;、&lt;code&gt;样式计算&lt;/code&gt;和&lt;code&gt;构建布局树&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;接下来就来拆解下一个过程——&lt;code&gt;渲染&lt;/code&gt;。分为以下几个步骤:&lt;/</summary>
+      
+    
+    
+    
+    <category term="HTTP" scheme="https://monthlygirl.github.io/categories/HTTP/"/>
+    
+    
+    <category term="浏览器" scheme="https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>从浏览器地址栏输入URL到显示页面的经历了什么?? -- 浏览器解析篇</title>
+    <link href="https://monthlygirl.github.io/2024/03/HTTP_RENDER.html"/>
+    <id>https://monthlygirl.github.io/2024/03/HTTP_RENDER.html</id>
+    <published>2024-03-12T12:38:59.000Z</published>
+    <updated>2024-03-12T12:38:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>完成了网络请求和响应，如果响应头中<code>Content-Type</code>的值是<code>text/html</code>，那么接下来就是浏览器的<code>解析</code>和<code>渲染</code>工作了。</p><p>首先来介绍解析部分，主要分为以下几个步骤:</p><ul><li>构建 <code>DOM</code>树</li><li><code>样式</code>计算</li><li>生成<code>布局树</code>(<code>Layout Tree</code>)</li></ul><h2 id="构建-DOM-树"><a href="#构建-DOM-树" class="headerlink" title="构建 DOM 树"></a>构建 DOM 树</h2><p>由于浏览器无法直接理解<code>HTML字符串</code>，因此将这一系列的字节流转换为一种有意义并且方便操作的数据结构，这种数据结构就是<code>DOM树</code>。<code>DOM树</code>本质上是一个以<code>document</code>为根节点的多叉树。</p><p>那通过什么样的方式来进行解析呢？</p><h3 id="HTML文法的本质"><a href="#HTML文法的本质" class="headerlink" title="HTML文法的本质"></a>HTML文法的本质</h3><p>首先，我们应该清楚把握一点: HTML 的文法并不是<code>上下文无关文法</code>。</p><p>这里，有必要讨论一下什么是<code>上下文无关文法</code>。</p><p>在计算机科学的<strong>编译原理</strong>学科中，有非常明确的定义:</p><blockquote><p>若一个形式文法G = (N, Σ, P, S) 的产生式规则都取如下的形式：V-&gt;w，则叫上下文无关语法。其中 V∈N ，w∈(N∪Σ)* 。</p></blockquote><p>其中把 G = (N, Σ, P, S) 中各个参量的意义解释一下:</p><ol><li>N 是<strong>非终结符</strong>(顾名思义，就是说最后一个符号不是它, 下面同理)集合。</li><li>Σ 是<strong>终结符</strong>集合。</li><li>P 是开始符，它必须属于 N ，也就是非终结符。</li><li>S 就是不同的产生式的集合。如 S -&gt; aSb 等等。</li></ol><p>通俗一点讲，<code>上下文无关的文法</code>就是说这个文法中所有产生式的左边都是一个非终结符。</p><p>看到这里，如果还有一点懵圈，我举个例子你就明白了。</p><p>比如:</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A -&gt; B</span><br></pre></td></tr></table></figure><p>这个文法中，每个产生式左边都会有一个非终结符，这就是<code>上下文无关的文法</code>。在这种情况下，<code>xBy</code>一定是可以规约出<code>xAy</code>的。</p><p>我们下面看看看一个反例：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aA -&gt; B</span><br><span class="line">Aa -&gt; B</span><br></pre></td></tr></table></figure><p>这种情况就是不是<code>上下文无关的文法</code>，当遇到<code>B</code>的时候，我们不知道到底能不能规约出<code>A</code>，取决于左边或者右边是否有<code>a</code>存在，也就是说和上下文有关。</p><p>关于它为什么是<code>非上下文无关文法</code>，首先需要让大家注意的是，规范的 HTML 语法，是符合<code>上下文无关文法</code>的，能够体现它<code>非上下文无关</code>的是<strong>不标准的语法</strong>。在此我仅举一个反例即可证明。</p><p>比如解析器扫描到<code>form</code>标签的时候，<strong>上下文无关文法</strong>的处理方式是直接创建对应 form 的 DOM 对象，而真实的 HTML5 场景中却不是这样，解析器会查看 <code>form</code> 的上下文，如果这个 <code>form</code> 标签的父标签也是 <code>form</code>, 那么<strong>直接跳过</strong>当前的 <code>form</code> 标签，否则才创建 DOM 对象。</p><p>常规的编程语言都是<strong>上下文无关</strong>的，而HTML却相反，也正是它<strong>非上下文无关</strong>的特性，决定了<code>HTML Parser</code>并不能使用常规编程语言的解析器来完成，需要另辟蹊径。</p><h3 id="解析算法"><a href="#解析算法" class="headerlink" title="解析算法"></a>解析算法</h3><p>HTML5 <a href="https://html.spec.whatwg.org/multipage/parsing.html">规范</a>详细地介绍了解析算法。这个算法分为两个阶段:</p><ol><li>标记化。</li><li>建树。</li></ol><p>对应的两个过程就是<strong>词法分析</strong>和<strong>语法分析</strong>。</p><h4 id="标记化算法"><a href="#标记化算法" class="headerlink" title="标记化算法"></a>标记化算法</h4><p>这个算法输入为<code>HTML文本</code>，输出为<code>HTML标记</code>，也成为<strong>标记生成器</strong>。其中运用<strong>有限自动状态机</strong>来完成。即在当当前状态下，接收一个或多个字符，就会更新到下一个状态。</p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    Hello sanyuan</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure><p>通过一个简单的例子来演示一下<code>标记化</code>的过程。</p><p>遇到<code>&lt;</code>, 状态为<strong>标记打开</strong>。</p><p>接收<code>[a-z]</code>的字符，会进入<strong>标记名称状态</strong>。</p><p>这个状态一直保持，直到遇到<code>&gt;</code>，表示标记名称记录完成，这时候变为<strong>数据状态</strong>。</p><p>接下来遇到<code>body</code>标签做同样的处理。</p><p>这个时候<code>html</code>和<code>body</code>的标记都记录好了。</p><p>现在来到&lt;body&gt;中的&gt;，进入<strong>数据状态</strong>，之后保持这样状态接收后面的字符<strong>hello sanyuan</strong>。</p><p>接着接收 &lt;/body&gt; 中的<code>&lt;</code>，回到<strong>标记打开</strong>, 接收下一个<code>/</code>后，这时候会创建一个<code>end tag</code>的token。</p><p>随后进入<strong>标记名称状态</strong>, 遇到<code>&gt;</code>回到<strong>数据状态</strong>。</p><p>接着以同样的样式处理 &lt;/body&gt;。</p><h4 id="建树算法"><a href="#建树算法" class="headerlink" title="建树算法"></a>建树算法</h4><p>之前提到过，DOM 树是一个以<code>document</code>为根节点的多叉树。因此解析器首先会创建一个<code>document</code>对象。标记生成器会把每个标记的信息发送给<strong>建树器</strong>。<strong>建树器</strong>接收到相应的标记时，会<strong>创建对应的 DOM 对象</strong>。创建这个<code>DOM对象</code>后会做两件事情:</p><ol><li>将<code>DOM对象</code>加入 DOM 树中。</li><li>将对应标记压入存放开放(与<code>闭合标签</code>意思对应)元素的栈中。</li></ol><p>还是拿下面这个例子说:</p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    Hello sanyuan</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure><p>首先，状态为<strong>初始化状态</strong>。</p><p>接收到标记生成器传来的<code>html</code>标签，这时候状态变为<strong>before html状态</strong>。同时创建一个<code>HTMLHtmlElement</code>的 DOM 元素, 将其加到<code>document</code>根对象上，并进行压栈操作。</p><p>接着状态自动变为<strong>before head</strong>, 此时从标记生成器那边传来<code>body</code>，表示并没有<code>head</code>, 这时候<strong>建树器</strong>会自动创建一个<strong>HTMLHeadElement</strong>并将其加入到<code>DOM树</code>中。</p><p>现在进入到<strong>in head</strong>状态, 然后直接跳到<strong>after head</strong>。</p><p>现在<strong>标记生成器</strong>传来了<code>body</code>标记，创建<strong>HTMLBodyElement</strong>, 插入到<code>DOM</code>树中，同时压入开放标记栈。</p><p>接着状态变为<strong>in body</strong>，然后来接收后面一系列的字符: <strong>Hello sanyuan</strong>。接收到第一个字符的时候，会创建一个<strong>Text</strong>节点并把字符插入其中，然后把<strong>Text</strong>节点插入到 DOM 树中<code>body元素</code>的下面。随着不断接收后面的字符，这些字符会附在<strong>Text</strong>节点上。</p><p>现在，<strong>标记生成器</strong>传过来一个<code>body</code>的结束标记，进入到<strong>after body</strong>状态。</p><p><strong>标记生成器</strong>最后传过来一个<code>html</code>的结束标记, 进入到<strong>after after body</strong>的状态，表示解析过程到此结束。</p><h4 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h4><p>讲到<code>HTML5</code>规范，就不得不说它强大的<strong>宽容策略</strong>, 容错能力非常强，虽然大家褒贬不一，不过我想作为一名资深的前端工程师，有必要知道<code>HTML Parser</code>在容错方面做了哪些事情。</p><p>接下来是 WebKit 中一些经典的容错示例，发现有其他的也欢迎来补充。</p><ol><li><p>使用&lt;/br&gt;而不是&lt;br&gt;</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (t-&gt;<span class="built_in">isCloseTag</span>(brTag) &amp;&amp; m_document-&gt;<span class="built_in">inCompatMode</span>()) &#123;</span><br><span class="line">  <span class="built_in">reportError</span>(MalformedBRError);</span><br><span class="line">  t-&gt;beginTag = <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>全部换为&lt;br&gt;的形式。</p></li><li><p>表格离散</p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">table</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span>&gt;</span>inner table<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span>&gt;</span>outer table<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure><p><code>WebKit</code>会自动转换为:</p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span>&gt;</span>outer table<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span>&gt;</span>inner table<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure></li><li><p>表单元素嵌套</p></li></ol><p>这时候直接忽略里面的<code>form</code>。</p><h2 id="样式计算"><a href="#样式计算" class="headerlink" title="样式计算"></a>样式计算</h2><p>关于CSS样式，它的来源一般是三种: </p><ol><li><strong>link标签引用</strong></li><li><strong>style标签中的样式</strong></li><li><strong>元素的内嵌style属性</strong></li></ol><h3 id="格式化样式表"><a href="#格式化样式表" class="headerlink" title="格式化样式表"></a>格式化样式表</h3><p>首先，浏览器是无法直接识别 CSS 样式文本的，因此渲染引擎接收到 CSS 文本之后第一件事情就是将其转化为一个结构化的对象，即styleSheets。</p><p>这个格式化的过程过于复杂，而且对于不同的浏览器会有不同的优化策略，这里就不展开了。</p><p>在浏览器控制台能够通过<code>document.styleSheets</code>来查看这个最终的结构。当然，这个结构包含了以上三种CSS来源，为后面的样式操作提供了基础。</p><h3 id="标准化样式属性"><a href="#标准化样式属性" class="headerlink" title="标准化样式属性"></a>标准化样式属性</h3><p>有一些 CSS 样式的数值并不容易被渲染引擎所理解，因此需要在计算样式之前将它们标准化，如<code>em</code>-&gt;<code>px</code>,<code>red</code>-&gt;<code>#ff0000</code>,<code>bold</code>-&gt;<code>700</code>等等。</p><h3 id="计算每个节点的具体样式"><a href="#计算每个节点的具体样式" class="headerlink" title="计算每个节点的具体样式"></a>计算每个节点的具体样式</h3><p>样式已经被<code>格式化</code>和<code>标准化</code>,接下来就可以计算每个节点的具体样式信息了。</p><p>其实计算的方式也并不复杂，主要就是两个规则: <strong>继承</strong>和<strong>层叠</strong>。</p><p>每个子节点都会默认继承父节点的样式属性，如果父节点中没有找到，就会采用浏览器默认样式，也叫<code>UserAgent样式</code>。这就是继承规则，非常容易理解。</p><p>然后是层叠规则，CSS 最大的特点在于它的层叠性，也就是最终的样式取决于各个属性共同作用的效果，甚至有很多诡异的层叠现象，看过《CSS世界》的同学应该对此深有体会，具体的层叠规则属于深入 CSS 语言的范畴，这里就不过多介绍了。</p><p>不过值得注意的是，在计算完样式之后，所有的样式值会被挂在到<code>window.computedStyle</code>当中，也就是可以通过JS来获取计算后的样式，非常方便。</p><h2 id="生成布局树"><a href="#生成布局树" class="headerlink" title="生成布局树"></a>生成布局树</h2><p>现在已经生成了<code>DOM树</code>和<code>DOM样式</code>，接下来要做的就是通过浏览器的布局系统<code>确定元素的位置</code>，也就是要生成一棵<code>布局树</code>(Layout Tree)。</p><p>布局树生成的大致工作如下:</p><ol><li>遍历生成的 DOM 树节点，并把他们添加到<code>布局树中</code>。</li><li>计算布局树节点的坐标位置。</li></ol><p>值得注意的是，这棵布局树值包含可见元素，对于 <code>head</code>标签和设置了<code>display: none</code>的元素，将不会被放入其中。</p><p>有人说首先会生成<code>Render Tree</code>，也就是渲染树，其实这还是 16 年之前的事情，现在 Chrome 团队已经做了大量的重构，已经没有生成<code>Render Tree</code>的过程了。而布局树的信息已经非常完善，完全拥有<code>Render Tree</code>的功能。</p><p>之所以不讲布局的细节，是因为它过于复杂，一一介绍会显得文章过于臃肿，不过大部分情况下我们只需要知道它所做的工作<strong>是什么</strong>即可，如果想深入其中的原理，知道它是<strong>如何来做的</strong>，我强烈推荐你去读一读人人FED团队的文章<a href="https://www.rrfed.com/2017/02/26/chrome-layout/">从Chrome源码看浏览器如何layout布局</a>。</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>梳理一下这一节的主要脉络:<br><img src= "/img/bgTop.jpg" data-lazy-src="https://wechatapppro-1252524126.cdn.xiaoeknow.com/app1yuxgivl3826/image/b_u_61de5084a68c2_65gDgqWw/e5wpxtltodauc6.jpg?imageView2/2/w/200/q/60"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;完成了网络请求和响应，如果响应头中&lt;code&gt;Content-Type&lt;/code&gt;的值是&lt;code&gt;text/html&lt;/code&gt;，那么接下来就是浏览器的&lt;code&gt;解析&lt;/code&gt;和&lt;code&gt;渲染&lt;/code&gt;工作了。&lt;/p&gt;
+&lt;p&gt;首先来介绍解析部分，主要分为以</summary>
+      
+    
+    
+    
+    <category term="HTTP" scheme="https://monthlygirl.github.io/categories/HTTP/"/>
+    
+    
+    <category term="浏览器渲染过程" scheme="https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E8%BF%87%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>CORS</title>
@@ -381,7 +431,7 @@
     
     
     
-    <category term="学习指南" scheme="https://monthlygirl.github.io/categories/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
+    <category term="JavaScript" scheme="https://monthlygirl.github.io/categories/JavaScript/"/>
     
     
   </entry>
@@ -455,54 +505,6 @@
     
     
     <category term="JavaScript" scheme="https://monthlygirl.github.io/tags/JavaScript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>事件模型</title>
-    <link href="https://monthlygirl.github.io/2021/03/Event_Model.html"/>
-    <id>https://monthlygirl.github.io/2021/03/Event_Model.html</id>
-    <published>2021-03-01T05:04:53.000Z</published>
-    <updated>2021-03-01T05:04:53.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="三种事件模型是什么"><a href="#三种事件模型是什么" class="headerlink" title="三种事件模型是什么?"></a>三种事件模型是什么?</h1><p>事件时用户操作网页时发生的交互动作或者网页本身的一些操作,现代浏览器一共有三种事件模型</p><h2 id="DOM0-级模型"><a href="#DOM0-级模型" class="headerlink" title="DOM0 级模型"></a>DOM0 级模型</h2><ul><li>第一周事件模型是最早的 DOM0 级模型,这种模型不会传播,所以没有事件流的概念,但是现在有的浏览器支持一冒泡的方式实现,它可以在网页中直接定义监听函数,也可以通过 js 属性来指定监听函数,这种方式是所有浏览器都兼容的</li></ul><h2 id="IE-事件模型"><a href="#IE-事件模型" class="headerlink" title="IE 事件模型"></a>IE 事件模型</h2><ul><li>第二种事件模型 是 IE 事件模型,在该事件模型中,一次事件共有两个过程,事件处理阶段,和事件冒泡阶段;事件处理阶段会首先执行目标元素绑定的监听事件;然后是事件冒泡阶段,冒泡指的是事件从目标元素冒泡到 document,依次检查经过的节点是否绑定了事件监听函数,如果有则执行,这种模型通过 attachEvent 来添加监听函数,可以添加多个监听函数,会按顺序一次执行</li></ul><h2 id="DOM2-级模型"><a href="#DOM2-级模型" class="headerlink" title="DOM2 级模型"></a>DOM2 级模型</h2><ul><li>第三种是 DOM2 级事件模型,在该事件模型中,一次事件共有三个过程,第一个过程是事件捕获阶段;事件捕获指的是事件从 document 一直向下传播到目标元素,依次检查经过的节点是否绑定了事件监听函数,如果有则执行,后面这两个阶段和 IE 事件模型的两个阶段相同,这种事件模型,事件绑定函数式 addEventListener,其中第三个参数可以指定事件是否在捕获阶段执行</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;三种事件模型是什么&quot;&gt;&lt;a href=&quot;#三种事件模型是什么&quot; class=&quot;headerlink&quot; title=&quot;三种事件模型是什么?&quot;&gt;&lt;/a&gt;三种事件模型是什么?&lt;/h1&gt;&lt;p&gt;事件时用户操作网页时发生的交互动作或者网页本身的一些操作,现代浏览器一共有三种事</summary>
-      
-    
-    
-    
-    <category term="JavaScript" scheme="https://monthlygirl.github.io/categories/JavaScript/"/>
-    
-    
-    <category term="DOM0级 DOM2级" scheme="https://monthlygirl.github.io/tags/DOM0%E7%BA%A7-DOM2%E7%BA%A7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>模块化</title>
-    <link href="https://monthlygirl.github.io/2021/03/Module.html"/>
-    <id>https://monthlygirl.github.io/2021/03/Module.html</id>
-    <published>2021-03-01T05:04:53.000Z</published>
-    <updated>2021-03-01T05:04:53.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="模块化开发怎么做"><a href="#模块化开发怎么做" class="headerlink" title="模块化开发怎么做"></a>模块化开发怎么做</h1><p>模块化:一个模块是实现一个特点功能的一组方法,在最开始的时候,js 只实现一些简单的功能,所以并没有模块化的概念,但随着程序越来越复杂,代码的模块化开发变得越来越重要</p><p>由于函数具有独立作用域的特点,最原始的写法是使用函数来作为模块,几个函数作用一个模块,但是这种方法容易造成全局污染,且模块间没有联系</p><p>后来提出了对象的写法,通过将函数作为一个对象的方法来实现,这样解决了直接使用函数作用模块的一些缺点,但是这种办法会暴露所以的模块成员,外部代码可以修改内部属性的值</p><p>也可以使用立即执行函数的写法,通过利用闭包来实现模块私有作用域的建立,同时不会对全局作用域造成污染</p><p>简单来说:模块化就是 把函数作为模块 ,<br>缺陷: 污染全局变量, 模块成员之间没什么关系<br>方法: 面向对象思想 ,并使用立即执行函数 ,实现闭包 避免了变量污染 同时同一模块内的成员也有了关系 在模块外部无法修改我们没有暴露出来的变量、函数 这就是简单的模块</p><h2 id="js-的几种模块规范"><a href="#js-的几种模块规范" class="headerlink" title="js 的几种模块规范"></a>js 的几种模块规范</h2><ol><li><p>CommonJS 方法,它通过 require 来引入模块,通过 module.exports 定义模块的输出接口,这种模块加载方案是 服务端的解决方法,它是以同步的方式来引入模块的,因为在服务DAU文件都存储在本地磁盘,读取非常快,所以以同步的方式加载没有问题但如果是在浏览器端,由于模块加载时使用网络请求,因此使用异步加载的方式更加合适</p></li><li><p>AMD 方法,这种方法采用异步加载的方式来加载模块,模块的加载不影响后面语句的执行,所有依赖这个模块的语句都定义在一个回调函数里,等到加载完成后再执行回调函数 require.js 实现了 AMD 规范</p></li><li><p>CMD 方案,这种方案和 AMD 方案都是为了解决异步模块加载的问题,sea.js实现了 CMD 规范,它和require.js 的区别在于模块定义时对依赖的处理不同对依赖模块的执行时机的处理也不同</p></li><li><p>ES6 提出的方案,使用 import 和 export 的形式来导入导出模块,这种方案和上面三种方案都不同</p></li></ol><h1 id="AMD-和-CMD-规范的区别"><a href="#AMD-和-CMD-规范的区别" class="headerlink" title="AMD 和 CMD 规范的区别"></a>AMD 和 CMD 规范的区别</h1><p>主要区别在两个方面</p><ol><li><p>第一个方面是在模块定义时对依赖的处理不同,AMD 推崇依赖前置,在定义模块的时候就要声明其依赖的模块,而 CMD 推崇就近依赖,只有利用某个模块的时候再去 require</p></li><li><p>第二个方面试依赖模块的执行时机处理不同,首先 AMD 和 CMD 对于模块的加载方式都是异步加载,不过他们在于模块的执行时机,AMD 在依赖模块加载完成后就直接执行依赖模块,依赖模块的执行顺序和我们书写的顺序不一定一致,而 CMD 在依赖模块加载完成后并不执行,只是下载而已,等到所有的依赖模块都加载好后,进入回调函数逻辑,遇到require语句时才执行对应模块</p></li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;模块化开发怎么做&quot;&gt;&lt;a href=&quot;#模块化开发怎么做&quot; class=&quot;headerlink&quot; title=&quot;模块化开发怎么做&quot;&gt;&lt;/a&gt;模块化开发怎么做&lt;/h1&gt;&lt;p&gt;模块化:一个模块是实现一个特点功能的一组方法,在最开始的时候,js 只实现一些简单的功能,所</summary>
-      
-    
-    
-    
-    <category term="JavaScript" scheme="https://monthlygirl.github.io/categories/JavaScript/"/>
-    
-    
-    <category term="模块化" scheme="https://monthlygirl.github.io/tags/%E6%A8%A1%E5%9D%97%E5%8C%96/"/>
     
   </entry>
   
