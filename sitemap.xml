@@ -2,15 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/04/forEach.html</loc>
-    
-    <lastmod>2024-04-12</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://monthlygirl.github.io/2024/03/HTTP1.1.html</loc>
     
     <lastmod>2024-03-12</lastmod>
@@ -221,6 +212,15 @@
     <loc>https://monthlygirl.github.io/2022/06/arguments.html</loc>
     
     <lastmod>2022-06-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/2022/04/forEach.html</loc>
+    
+    <lastmod>2022-04-12</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
