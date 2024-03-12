@@ -37,7 +37,9 @@
     <category term="HTTP" scheme="https://monthlygirl.github.io/categories/HTTP/"/>
     
     
-    <category term="浏览器、HTTP" scheme="https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E3%80%81HTTP/"/>
+    <category term="HTTP" scheme="https://monthlygirl.github.io/tags/HTTP/"/>
+    
+    <category term="浏览器" scheme="https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/"/>
     
   </entry>
   
@@ -111,7 +113,9 @@
     <category term="HTTP" scheme="https://monthlygirl.github.io/categories/HTTP/"/>
     
     
-    <category term="浏览器安全、HTTPS" scheme="https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8%E3%80%81HTTPS/"/>
+    <category term="浏览器安全" scheme="https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8/"/>
+    
+    <category term="HTTPS" scheme="https://monthlygirl.github.io/tags/HTTPS/"/>
     
   </entry>
   
