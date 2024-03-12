@@ -20,6 +20,33 @@
   </url>
   
   <url>
+    <loc>https://monthlygirl.github.io/2024/03/HTTPS_RSA.html</loc>
+    
+    <lastmod>2024-03-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/2024/02/http_trait.html</loc>
+    
+    <lastmod>2024-02-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/2024/02/HTTP_BODY.html</loc>
+    
+    <lastmod>2024-02-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://monthlygirl.github.io/2024/01/cors.html</loc>
     
     <lastmod>2024-01-28</lastmod>
@@ -674,6 +701,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://monthlygirl.github.io/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8%E3%80%81HTTPS/</loc>
+    <lastmod>2024-03-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -727,6 +761,13 @@
   
   <url>
     <loc>https://monthlygirl.github.io/categories/webpack/</loc>
+    <lastmod>2024-03-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/categories/%E6%B5%8F%E8%A7%88%E5%99%A8/</loc>
     <lastmod>2024-03-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
