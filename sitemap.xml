@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://monthlygirl.github.io/2024/03/work-upload.html</loc>
+    
+    <lastmod>2024-03-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://monthlygirl.github.io/2024/03/HTTP1.1.html</loc>
     
     <lastmod>2024-03-12</lastmod>
@@ -900,6 +909,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://monthlygirl.github.io/tags/work/</loc>
+    <lastmod>2024-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -960,6 +976,13 @@
   
   <url>
     <loc>https://monthlygirl.github.io/categories/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2024-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/categories/work/</loc>
     <lastmod>2024-03-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
