@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/03/work-upload.html</loc>
+    <loc>https://monthlygirl.github.io/posts/work-upload.html</loc>
     
     <lastmod>2024-03-18</lastmod>
     
@@ -11,7 +11,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/03/HTTP1.1.html</loc>
+    <loc>https://monthlygirl.github.io/posts/HTTP1.1.html</loc>
     
     <lastmod>2024-03-12</lastmod>
     
@@ -20,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/03/HTTP_PARSE.html</loc>
+    <loc>https://monthlygirl.github.io/posts/HTTP_PARSE.html</loc>
     
     <lastmod>2024-03-12</lastmod>
     
@@ -29,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/03/HTTP_RENDER.html</loc>
+    <loc>https://monthlygirl.github.io/posts/HTTP_RENDER.html</loc>
     
     <lastmod>2024-03-12</lastmod>
     
@@ -38,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/03/HTTPS_RSA.html</loc>
+    <loc>https://monthlygirl.github.io/posts/HTTPS_RSA.html</loc>
     
     <lastmod>2024-03-01</lastmod>
     
@@ -47,7 +47,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/02/http_trait.html</loc>
+    <loc>https://monthlygirl.github.io/posts/http_trait.html</loc>
     
     <lastmod>2024-02-27</lastmod>
     
@@ -56,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/02/HTTP_BODY.html</loc>
+    <loc>https://monthlygirl.github.io/posts/HTTP_BODY.html</loc>
     
     <lastmod>2024-02-22</lastmod>
     
@@ -65,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/01/cors.html</loc>
+    <loc>https://monthlygirl.github.io/posts/cors.html</loc>
     
     <lastmod>2024-01-28</lastmod>
     
@@ -74,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/01/CDN.html</loc>
+    <loc>https://monthlygirl.github.io/posts/CDN.html</loc>
     
     <lastmod>2024-01-28</lastmod>
     
@@ -83,7 +83,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/01/vite-build.html</loc>
+    <loc>https://monthlygirl.github.io/posts/vite-build.html</loc>
     
     <lastmod>2024-01-21</lastmod>
     
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/01/vue-template-compile-render.html</loc>
+    <loc>https://monthlygirl.github.io/posts/vue-template-compile-render.html</loc>
     
     <lastmod>2024-01-13</lastmod>
     
@@ -101,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/01/vue-build-init.html</loc>
+    <loc>https://monthlygirl.github.io/posts/vue-build-init.html</loc>
     
     <lastmod>2024-01-13</lastmod>
     
@@ -110,7 +110,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/01/Interview-event-loop&async/await.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Interview-event-loop&async/await.html</loc>
     
     <lastmod>2024-01-11</lastmod>
     
@@ -119,7 +119,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2024/01/Interview-reflow-repaint.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Interview-reflow-repaint.html</loc>
     
     <lastmod>2024-01-09</lastmod>
     
@@ -128,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/12/Interview-JavaScript.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Interview-JavaScript.html</loc>
     
     <lastmod>2023-12-24</lastmod>
     
@@ -137,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/12/Interview-Webpack.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Interview-Webpack.html</loc>
     
     <lastmod>2023-12-24</lastmod>
     
@@ -146,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/12/Interview-CSS.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Interview-CSS.html</loc>
     
     <lastmod>2023-12-22</lastmod>
     
@@ -155,7 +155,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/12/Interview-Vue.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Interview-Vue.html</loc>
     
     <lastmod>2023-12-22</lastmod>
     
@@ -164,7 +164,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/12/node-eventloop.html</loc>
+    <loc>https://monthlygirl.github.io/posts/node-eventloop.html</loc>
     
     <lastmod>2023-12-12</lastmod>
     
@@ -173,7 +173,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/11/Vue%20defineReactive.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Vue%20defineReactive.html</loc>
     
     <lastmod>2023-11-26</lastmod>
     
@@ -182,7 +182,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/11/Vue%20source.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Vue%20source.html</loc>
     
     <lastmod>2023-11-25</lastmod>
     
@@ -191,7 +191,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2023/07/Interview-JS.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Interview-JS.html</loc>
     
     <lastmod>2023-07-17</lastmod>
     
@@ -200,7 +200,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/10/browser.html</loc>
+    <loc>https://monthlygirl.github.io/posts/browser.html</loc>
     
     <lastmod>2022-10-12</lastmod>
     
@@ -209,7 +209,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/08/node-async.html</loc>
+    <loc>https://monthlygirl.github.io/posts/node-async.html</loc>
     
     <lastmod>2022-08-12</lastmod>
     
@@ -218,7 +218,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/06/arguments.html</loc>
+    <loc>https://monthlygirl.github.io/posts/arguments.html</loc>
     
     <lastmod>2022-06-12</lastmod>
     
@@ -227,7 +227,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/04/forEach.html</loc>
+    <loc>https://monthlygirl.github.io/posts/forEach.html</loc>
     
     <lastmod>2022-04-12</lastmod>
     
@@ -236,7 +236,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/03/algorithm%E2%80%94array.html</loc>
+    <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94array.html</loc>
     
     <lastmod>2022-03-14</lastmod>
     
@@ -245,7 +245,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/03/algorithm%E2%80%94cookie.html</loc>
+    <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94cookie.html</loc>
     
     <lastmod>2022-03-14</lastmod>
     
@@ -254,7 +254,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/03/algorithm%E2%80%94summary.html</loc>
+    <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94summary.html</loc>
     
     <lastmod>2022-03-14</lastmod>
     
@@ -263,7 +263,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/03/algorithm%E2%80%94merge.html</loc>
+    <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94merge.html</loc>
     
     <lastmod>2022-03-14</lastmod>
     
@@ -272,7 +272,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/03/algorithm%E2%80%94remove-item.html</loc>
+    <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94remove-item.html</loc>
     
     <lastmod>2022-03-14</lastmod>
     
@@ -281,7 +281,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2022/03/arguments.html</loc>
+    <loc>https://monthlygirl.github.io/posts/arguments.html</loc>
     
     <lastmod>2022-03-12</lastmod>
     
@@ -290,7 +290,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/06/code.html</loc>
+    <loc>https://monthlygirl.github.io/posts/code.html</loc>
     
     <lastmod>2021-06-16</lastmod>
     
@@ -299,7 +299,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/04/vue3.0.html</loc>
+    <loc>https://monthlygirl.github.io/posts/vue3.0.html</loc>
     
     <lastmod>2021-04-01</lastmod>
     
@@ -308,7 +308,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/03/http-version.html</loc>
+    <loc>https://monthlygirl.github.io/posts/http-version.html</loc>
     
     <lastmod>2021-03-01</lastmod>
     
@@ -317,7 +317,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/03/JavaScript.html</loc>
+    <loc>https://monthlygirl.github.io/posts/JavaScript.html</loc>
     
     <lastmod>2021-03-01</lastmod>
     
@@ -326,7 +326,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/03/Event_Model.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Event_Model.html</loc>
     
     <lastmod>2021-03-01</lastmod>
     
@@ -335,7 +335,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/03/Module.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Module.html</loc>
     
     <lastmod>2021-03-01</lastmod>
     
@@ -344,7 +344,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/02/ES6.html</loc>
+    <loc>https://monthlygirl.github.io/posts/ES6.html</loc>
     
     <lastmod>2021-02-27</lastmod>
     
@@ -353,7 +353,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/02/this.html</loc>
+    <loc>https://monthlygirl.github.io/posts/this.html</loc>
     
     <lastmod>2021-02-27</lastmod>
     
@@ -362,7 +362,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/02/React.html</loc>
+    <loc>https://monthlygirl.github.io/posts/React.html</loc>
     
     <lastmod>2021-02-22</lastmod>
     
@@ -371,7 +371,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/02/Hook.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Hook.html</loc>
     
     <lastmod>2021-02-22</lastmod>
     
@@ -380,7 +380,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/02/redux.html</loc>
+    <loc>https://monthlygirl.github.io/posts/redux.html</loc>
     
     <lastmod>2021-02-02</lastmod>
     
@@ -389,7 +389,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/02/JS_Async.html</loc>
+    <loc>https://monthlygirl.github.io/posts/JS_Async.html</loc>
     
     <lastmod>2021-02-02</lastmod>
     
@@ -398,7 +398,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/02/html5.html</loc>
+    <loc>https://monthlygirl.github.io/posts/html5.html</loc>
     
     <lastmod>2021-02-01</lastmod>
     
@@ -407,7 +407,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/01/Css.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Css.html</loc>
     
     <lastmod>2021-01-27</lastmod>
     
@@ -416,7 +416,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/01/new.html</loc>
+    <loc>https://monthlygirl.github.io/posts/new.html</loc>
     
     <lastmod>2021-01-25</lastmod>
     
@@ -425,7 +425,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/01/webpack.html</loc>
+    <loc>https://monthlygirl.github.io/posts/webpack.html</loc>
     
     <lastmod>2021-01-19</lastmod>
     
@@ -434,7 +434,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/01/CSRF.html</loc>
+    <loc>https://monthlygirl.github.io/posts/CSRF.html</loc>
     
     <lastmod>2021-01-14</lastmod>
     
@@ -443,7 +443,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2021/01/cache.html</loc>
+    <loc>https://monthlygirl.github.io/posts/cache.html</loc>
     
     <lastmod>2021-01-05</lastmod>
     
@@ -452,7 +452,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2020/12/array.html</loc>
+    <loc>https://monthlygirl.github.io/posts/array.html</loc>
     
     <lastmod>2020-12-31</lastmod>
     
@@ -461,7 +461,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2020/12/Object-keys.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Object-keys.html</loc>
     
     <lastmod>2020-12-31</lastmod>
     
@@ -470,7 +470,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2020/12/XSS.html</loc>
+    <loc>https://monthlygirl.github.io/posts/XSS.html</loc>
     
     <lastmod>2020-12-30</lastmod>
     
@@ -479,7 +479,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2020/12/eventLoop.html</loc>
+    <loc>https://monthlygirl.github.io/posts/eventLoop.html</loc>
     
     <lastmod>2020-12-29</lastmod>
     
@@ -488,7 +488,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2020/12/HTTP_URL.html</loc>
+    <loc>https://monthlygirl.github.io/posts/HTTP_URL.html</loc>
     
     <lastmod>2020-12-23</lastmod>
     
@@ -497,7 +497,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2020/12/closure.html</loc>
+    <loc>https://monthlygirl.github.io/posts/closure.html</loc>
     
     <lastmod>2020-12-22</lastmod>
     
@@ -506,7 +506,7 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/2020/12/Ajax.html</loc>
+    <loc>https://monthlygirl.github.io/posts/Ajax.html</loc>
     
     <lastmod>2020-12-17</lastmod>
     
