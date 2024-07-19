@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://monthlygirl.github.io/posts/cdn-retry.html</loc>
+    <lastmod>2024-05-18</lastmod>
+  </url>
+  <url>
+    <loc>https://monthlygirl.github.io/posts/node-koa.html</loc>
+    <lastmod>2024-03-20</lastmod>
+  </url>
+  <url>
     <loc>https://monthlygirl.github.io/posts/work-upload.html</loc>
     <lastmod>2024-03-18</lastmod>
+  </url>
+  <url>
+    <loc>https://monthlygirl.github.io/posts/index.html</loc>
+    <lastmod>2024-03-12</lastmod>
   </url>
   <url>
     <loc>https://monthlygirl.github.io/posts/HTTP1.1.html</loc>
@@ -117,16 +129,12 @@
     <lastmod>2022-03-14</lastmod>
   </url>
   <url>
-    <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94merge.html</loc>
-    <lastmod>2022-03-14</lastmod>
-  </url>
-  <url>
     <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94remove-item.html</loc>
     <lastmod>2022-03-14</lastmod>
   </url>
   <url>
-    <loc>https://monthlygirl.github.io/posts/arguments.html</loc>
-    <lastmod>2022-03-12</lastmod>
+    <loc>https://monthlygirl.github.io/posts/algorithm%E2%80%94merge.html</loc>
+    <lastmod>2022-03-14</lastmod>
   </url>
   <url>
     <loc>https://monthlygirl.github.io/posts/code.html</loc>

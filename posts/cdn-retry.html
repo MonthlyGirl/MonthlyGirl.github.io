@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>多云切换-静态资源自动重试 | 月刊少女野崎君のBlog</title><meta name="keywords" content="work"><meta name="author" content="月刊少女野崎君"><meta name="copyright" content="月刊少女野崎君"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="背景静态资源的快速加载和高可用性对用户体验至关重要。随着 CDN 的推行，单一云服务商在遇到特殊情况时（如网络中断、服务故障等），会导致静态资源加载失败，从而影响用户体验和业务连续性。 所以，单靠一个云服务商已经不能满足我们的需求了，我们需要更强的容灾能力。需要对资源进行多云自动切换。 我们的最终目标是“多CDN架构”，具体实现方式如下 在源站上配置多个CDN域名，每个CDN域名对应一个CDN服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多云切换-静态资源自动重试">
+<meta property="og:url" content="https://monthlygirl.github.io/posts/cdn-retry.html">
+<meta property="og:site_name" content="月刊少女野崎君のBlog">
+<meta property="og:description" content="背景静态资源的快速加载和高可用性对用户体验至关重要。随着 CDN 的推行，单一云服务商在遇到特殊情况时（如网络中断、服务故障等），会导致静态资源加载失败，从而影响用户体验和业务连续性。 所以，单靠一个云服务商已经不能满足我们的需求了，我们需要更强的容灾能力。需要对资源进行多云自动切换。 我们的最终目标是“多CDN架构”，具体实现方式如下 在源站上配置多个CDN域名，每个CDN域名对应一个CDN服务">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://t.mwm.moe/pc/?postId=108">
+<meta property="article:published_time" content="2024-05-18T02:49:17.000Z">
+<meta property="article:modified_time" content="2024-05-18T02:49:17.000Z">
+<meta property="article:author" content="月刊少女野崎君">
+<meta property="article:tag" content="work">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://t.mwm.moe/pc/?postId=108"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://monthlygirl.github.io/posts/cdn-retry"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta name="google-site-verification" content="afbr0cKFvyfSEnYBQiUpNCz5ReZ61YV9fa6axl1wg4s"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,诚信,友善","fontSize":"15px"},
+  lightbox: 'mediumZoom',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1A1F23","position":"bottom-left"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2024-05-18 10:49:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="referrer" content="no-referrer-when-downgrade" /><meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="月刊少女野崎君のBlog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" data-lazy-src="https://wechatapppro-1252524126.cdn.xiaoeknow.com/apprnDA0ZDw4581/image/b_u_5b2225aa46488_oGKN7IvA/le8aileg0ew2.jpg?imageView2/2/w/200/q/60" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page" href="/random/"><i class="fa-fw fas fa-random"></i><span> 随便看看</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="no-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">月刊少女野崎君のBlog</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page" href="/random/"><i class="fa-fw fas fa-random"></i><span> 随便看看</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">多云切换-静态资源自动重试</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-18T02:49:17.000Z" title="发表于 2024-05-18 10:49:17">2024-05-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-18T02:49:17.000Z" title="更新于 2024-05-18 10:49:17">2024-05-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/work/">work</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>静态资源的快速加载和高可用性对用户体验至关重要。随着 CDN 的推行，单一云服务商在遇到特殊情况时（如网络中断、服务故障等），会导致静态资源加载失败，从而影响用户体验和业务连续性。</p>
+<p>所以，单靠一个云服务商已经不能满足我们的需求了，我们需要更强的容灾能力。需要对资源进行多云自动切换。</p>
+<p>我们的最终目标是“多CDN架构”，具体实现方式如下</p>
+<p>在源站上配置多个CDN域名，每个CDN域名对应一个CDN服务提供商的节点。这样，不同的CDN节点可以通过不同的域名访问同一个源站。</p>
+<p>基于这种 “多 CDN 架构 ” 来应对单个云厂商在遇到特殊情况时 可以对资源进行自动切换，以保证网站的正常运行。</p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191048646.png" alt="image-20240719104837190"></p>
+<h1 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h1><h4 id="静态资源的分类"><a href="#静态资源的分类" class="headerlink" title="### 静态资源的分类"></a>### 静态资源的分类</h4><p>静态资源可以大致分为两种类型：</p>
+<ol>
+<li><p><strong>同步静态资源</strong></p>
+<p>跟随页面组合好之后一起返回 ｜ 接口返回的cdn地址</p>
+<p>特点：能够灵活控制资源cdn域名</p>
+</li>
+<li><p><strong>异步静态资源</strong></p>
+<p>由前端打包工具，建立关联关系后，构建工具异步拉取</p>
+<p>特点：由前端在构建时，根据不同的环境写死的cdn域名，在构建时已经确定，无法在运行时动态替换</p>
+</li>
+</ol>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>所以我们的实现主要分为三部分：</p>
+<ol>
+<li>如何自动获取加载失败的静态资源（同步加载的 <code>&lt;script&gt;</code>, <code>&lt;link&gt;</code>, <code>&lt;img&gt;</code>）并重试</li>
+<li>如何自动获取加载失败的异步脚本并重试</li>
+<li>如何自动获取加载失败的背景图片并重试</li>
+</ol>
+<p>最先，我想到的是动态去修改```__webpack_public_path__ ``（构建时修改，运行时生效）</p>
+<p>伪代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 代码中写死的publicCDN地址：</span></span><br><span class="line"><span class="comment">// publicCDN=&quot;https://assets.cdn.xxx.com&quot;</span></span><br><span class="line"><span class="keyword">if</span> (process.<span class="property">env</span>.<span class="property">VUE_APP_BUILD_TAG</span> !== <span class="string">&#x27;localhost&#x27;</span>) &#123;</span><br><span class="line"><span class="keyword">const</span> target = cdn_replace.<span class="title function_">filter</span>(<span class="function"><span class="params">i</span> =&gt;</span> <span class="function"><span class="params">i</span> =&gt;</span> i.<span class="property">origin_cdn</span> === publicCDN)</span><br><span class="line">    __webpack_public_path__ = target ? target[<span class="number">0</span>].<span class="property">target_cdn</span> : publicCDN</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>优点：在运行时就会直接替换，不会触发error后再加载，过程比较平滑</p>
+<p>缺点：需要修改构建配置，现在主流是webpack，后续构建工具多了之后，还要对不同的构建做不同的改动</p>
+<p>显然，这不是最优选，不仅需要每个业务中都去修改配置，后续如果升级了其他构建工具，可能还会出现其他预想不到的问题。</p>
+<p>方案二：</p>
+<p>通过在公共模板挂载全局error事件，捕获资源失败场景</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="property">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;error&#x27;</span>, errorHandler, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p>然后通过errorHandler来处理对应异步资源的cdn域名替换</p>
+<p>伪代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">errorHandler</span>(<span class="params">e</span>) &#123;</span><br><span class="line">    <span class="comment">// 拿到报错异步资源的src</span></span><br><span class="line">    <span class="keyword">let</span> source_src = e.<span class="property">target</span>.<span class="property">src</span>;</span><br><span class="line">    <span class="comment">// 获取协议</span></span><br><span class="line">    <span class="keyword">let</span> protocol = source_src.<span class="title function_">split</span>(<span class="string">&#x27;//&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="comment">// 获取domain</span></span><br><span class="line">    <span class="keyword">let</span> cdn = source_src.<span class="title function_">split</span>(<span class="string">&#x27;//&#x27;</span>)[<span class="number">1</span>].<span class="title function_">split</span>(<span class="string">&#x27;/&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="comment">// 组合cdn地址</span></span><br><span class="line">    <span class="keyword">let</span> full_domain = <span class="string">`<span class="subst">$&#123;protocol&#125;</span>://<span class="subst">$&#123;cdn&#125;</span>`</span></span><br><span class="line">    <span class="comment">// 找到需要替换的目标地址</span></span><br><span class="line">    <span class="keyword">const</span> target = cdn_replace.<span class="title function_">filter</span>(<span class="function"><span class="params">i</span> =&gt;</span> <span class="function"><span class="params">i</span> =&gt;</span> i.<span class="property">origin_cdn</span> === full_domain)</span><br><span class="line">    <span class="keyword">if</span> (target) &#123;</span><br><span class="line">        <span class="comment">// 使用目标cdn替换当前cdn</span></span><br><span class="line">        source_src = source_src.<span class="title function_">replace</span>(full_domain, target[<span class="number">0</span>].<span class="property">target_cdn</span> )</span><br><span class="line">        <span class="comment">// 重新挂载script</span></span><br><span class="line">        <span class="title function_">loadScript</span>(source_src)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">loadScript</span>(<span class="params">src</span>) &#123;</span><br><span class="line">     <span class="keyword">const</span> scriptEle = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;script&#x27;</span>)</span><br><span class="line">      scriptEle.<span class="property">crossOrigin</span> = <span class="string">&#x27;anonymous&#x27;</span></span><br><span class="line">      scriptEle.<span class="property">type</span> = <span class="string">&#x27;text/javascript&#x27;</span></span><br><span class="line">      scriptEle.<span class="property">src</span> = src</span><br><span class="line">      scriptEle.<span class="title function_">addEventListener</span>(<span class="string">&#x27;load&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;成功&#x27;</span>)</span><br><span class="line">      &#125;)</span><br><span class="line">      scriptEle.<span class="title function_">addEventListener</span>(<span class="string">&#x27;error&#x27;</span>, <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br></pre></td></tr></table></figure>
+
+<p>优点：无需业务侧的配合，比较通用，既能兼顾老的页面也能支持新的页面</p>
+<p>缺点：会触发资源的error事件之后，再次挂载对应的修改后的cdn</p>
+<p>但这种方式无法对webpack构建的异步产物生效，因为在一个页面有多个异步chunk请求时，<strong>webpack是通过promise.all来处理异步chunk的</strong>，当一个失效后，Promise会进入rejected状态，导致再无法转为其他状态，会阻塞其他异步文件加载。</p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191110864.png" alt="image-20240719111038151"></p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191111791.png" alt="image-20240719111101179"></p>
+<p>如何打破这种局面？摆在我们面前的只有两条路：</p>
+<ol>
+<li>使用 webpack 插件，在编译期改写该段代码。</li>
+<li>使用 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Monkey_patch">monkey patch</a> 对浏览器的原生方法进行改写。</li>
+</ol>
+<p>为了降低集成成本，我们选择了第二种方案，即在运行时动态改写 <code>document.createElement</code>, <code>Node#appendChild</code> 等方法。</p>
+<p>大体思路：</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.createElement</span><br><span class="line">         ↓</span><br><span class="line">HTMLScriptElement(src, onload, onerror)</span><br><span class="line">         ↓</span><br><span class="line">document.head.appendChild</span><br></pre></td></tr></table></figure>
+
+<p>为了阻止webpack在onerror回掉直接进入reject流程，可以直接对浏览器原生方法的document.createElement以及Node#appendChild等方法进行重写，使其流程变为：</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.createElement</span><br><span class="line">         ↓</span><br><span class="line">virtualScriptElement(src, onload, onerror)</span><br><span class="line">         ↓</span><br><span class="line">document.head.appendChild</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191114021.png" alt="image-20240719111444551"></p>
+<p>优点：只针对script/link等标签的异步资源做拦截，无需担心掉入构建工具的rejected状态，从而影响后续异步资源的加载，也能配合最大重试次数的限制，能够及时终止循环重试。业务侧无需改动，公共模板挂载这段逻辑，并初始化即可。</p>
+<p>看到这也许你会问了，</p>
+<h5 id="为什么要创建-虚拟-element-对象？"><a href="#为什么要创建-虚拟-element-对象？" class="headerlink" title="为什么要创建 虚拟 element 对象？"></a>为什么要创建 虚拟 element 对象？</h5><p>其实直接创建真实element，并且对真实element的onerror和onload做重写也ok，但是会被用户自定义的onerror和onload覆盖掉。</p>
+<p>但是虚拟element就可以解决这个问题，可以将用户设置的onerror和onload挂载到虚拟对象上，通过ignore标识来判断，走用户设置的onerror还是默认重写的onerror。</p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191116062.png" alt="image-20240719111602968"></p>
+<p>那么 <strong>对页面上其他的document.createElement方法有没有影响？</strong></p>
+<p>没有影响，因为仅仅是在创建的时候多了一层包裹对象，本质上还是在调用原生createElement，并且在对创建的元素进行属性设置或者是插入节点动作时，都是取的真实的元素，而非虚拟对象。</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// hookElement</span><br><span class="line">&#123;</span><br><span class="line">    originOnerror: fn,  // 原生onerror</span><br><span class="line">    originOnload: fn,    // 原生onload</span><br><span class="line">    realElement: script | link // 真实element</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>页面中可能使用到document.createElement的场景</p>
+<ol>
+<li>Vue中的render函数</li>
+<li>Vue中的自定义指令</li>
+<li>webpack中的动态css/js</li>
+<li>vite中的动态css/js</li>
+<li>用户（开发）操作动态添加DOM元素</li>
+</ol>
+<p>最终效果</p>
+<p>a. 前置条件申请 3 个 c d n 域名</p>
+<p>b. 插入重试逻辑代码，体积2.2kb，可以直接放到页面上，无需使用cdn加载</p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191118931.png" alt="image-20240719111848137"></p>
+<p>c. 初始化重试方法</p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191119404.png" alt="image-20240719111956627"></p>
+<p>d. 屏蔽原异步js地址</p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191121045.png" alt="image-20240719112141930"></p>
+<p>e. 进入异步页面，验证重试</p>
+<p><img src= "/img/bgTop.jpg" data-lazy-src="https://raw.githubusercontent.com/MonthlyGirl/images/master/markdown/202407191122571.png" alt="image-20240719112213676"></p>
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">使用起来非常简单，只需要初始化并传入域名列表即可：</span><br><span class="line"></span><br><span class="line"><span class="comment">// assetsRetryStatistics 中包含所有资源重试的相关信息</span></span><br><span class="line"><span class="keyword">var</span> assetsRetryStatistics = <span class="variable language_">window</span>.<span class="title function_">assetsRetry</span>(&#123;</span><br><span class="line">    <span class="comment">// 域名列表，只有在域名列表中的资源，才会被重试</span></span><br><span class="line">    <span class="comment">// 使用以下配置，当 https://your.first.domain/js/1.js 加载失败时</span></span><br><span class="line">    <span class="comment">// 会自动使用 https://your.second.domain/namespace/js/1.js 重试</span></span><br><span class="line">    <span class="attr">domain</span>: [<span class="string">&#x27;your.first.domain&#x27;</span>, <span class="string">&#x27;your.second.domain/namespace&#x27;</span>],</span><br><span class="line">    <span class="comment">// 可选，最大重试次数，默认 3 次</span></span><br><span class="line">    <span class="attr">maxRetryCount</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="comment">// 可选，通过该参数可自定义 URL 的转换方式</span></span><br><span class="line">    <span class="attr">onRetry</span>: <span class="keyword">function</span>(<span class="params">currentUrl, originalUrl, statistics</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> currentUrl</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 对于给定资源，要么调用 onSuccess ，要么调用 onFail，标识其最终的加载状态</span></span><br><span class="line">    <span class="comment">// 加载详细信息（成功的 URL、失败的 URL 列表、重试次数）</span></span><br><span class="line">    <span class="comment">// 可以通过访问 assetsRetryStatistics[currentUrl] 来获取</span></span><br><span class="line">    <span class="attr">onSuccess</span>: <span class="keyword">function</span>(<span class="params">currentUrl</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(currentUrl, assetsRetryStatistics[currentUrl])</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">onFail</span>: <span class="keyword">function</span>(<span class="params">currentUrl</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(currentUrl, assetsRetryStatistics[currentUrl])</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>当使用以上代码初始化完毕后，以下内容便获得了加载失败重试的能力：</p>
+<ul>
+<li> 所有在 <code>html</code> 中使用 <code>&lt;script&gt;</code> 标签引用的脚本</li>
+<li> 所有在 <code>html</code> 中使用 <code>&lt;link&gt;</code> 标签引用的样式 （跨域 CSS 需要正确<a target="_blank" rel="noopener" href="https://github.com/Nikaple/assets-retry/blob/master/README-cn.md#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">配置</a>）</li>
+<li> 所有在 <code>html</code> 中使用 <code>&lt;img&gt;</code> 标签引用的图片</li>
+<li> 所有使用 <code>document.createElement(&#39;script&#39;)</code> 加载的脚本（如 webpack 的<a target="_blank" rel="noopener" href="https://webpack.docschina.org/guides/code-splitting/#%E5%8A%A8%E6%80%81%E5%AF%BC%E5%85%A5-dynamic-imports-">动态导入</a>）</li>
+<li> 所有 <code>css</code> 中（包含同步与异步）使用的 <code>background-image</code> 图片</li>
+</ul>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p><code>assetsRetry</code> 接受一个配置对象 <code>AssetsRetryOptions</code> ，其类型签名为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">interface <span class="title class_">AssetsRetryOptions</span> &#123;</span><br><span class="line">    <span class="attr">maxRetryCount</span>: number  <span class="comment">// 最大重试次数</span></span><br><span class="line">    <span class="attr">onRetry</span>: <span class="title class_">RetryFunction</span> <span class="comment">// 每次重试时执行的函数</span></span><br><span class="line">    <span class="attr">onSuccess</span>: <span class="title class_">SuccessFunction</span> <span class="comment">// 在域名列表内的资源最终加载成功时执行</span></span><br><span class="line">    <span class="attr">onFail</span>: <span class="title class_">FailFunction</span> <span class="comment">// 在域名列表内的资源最终加载失败时执行：</span></span><br><span class="line">    <span class="attr">domain</span>: <span class="title class_">Domain</span> <span class="comment">// 域名列表</span></span><br><span class="line">&#125;</span><br><span class="line">type <span class="title class_">RetryFunction</span> = <span class="function">(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">    currentUrl: string,</span></span></span><br><span class="line"><span class="params"><span class="function">    originalUrl: string,</span></span></span><br><span class="line"><span class="params"><span class="function">    retryCollector: <span class="literal">null</span> | RetryStatistics</span></span></span><br><span class="line"><span class="params"><span class="function"></span>) =&gt;</span> string | <span class="literal">null</span></span><br><span class="line">interface <span class="title class_">RetryStatistics</span> &#123;</span><br><span class="line">    <span class="attr">retryTimes</span>: number</span><br><span class="line">    <span class="attr">succeeded</span>: string[]</span><br><span class="line">    <span class="attr">failed</span>: string[]</span><br><span class="line">&#125;</span><br><span class="line">type <span class="title class_">SuccessFunction</span> = <span class="function">(<span class="params">currentUrl: string</span>) =&gt;</span> <span class="keyword">void</span></span><br><span class="line">type <span class="title class_">FailFunction</span> = <span class="function">(<span class="params">currentUrl: string</span>) =&gt;</span> <span class="keyword">void</span></span><br><span class="line">type <span class="title class_">Domain</span> = string[] | &#123; [<span class="attr">x</span>: string]: string &#125;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">月刊少女野崎君</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://monthlygirl.github.io/posts/cdn-retry.html">https://monthlygirl.github.io/posts/cdn-retry.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://monthlygirl.github.io" target="_blank">月刊少女野崎君のBlog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/work/">work</a></div><div class="post_share"><div class="social-share" data-image="https://t.mwm.moe/pc/?postId=108" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" data-lazy-src="/img/wechat.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/node-koa.html"><img class="next-cover" data-lazy-src="https://t.mwm.moe/pc/?postId=195" onerror="onerror=null;src='/img/default-img.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">KOA 洋葱模型</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/work-upload.html" title="关于一次上传密钥泄露引发的网站奔溃..."><img class="cover" data-lazy-src="https://t.mwm.moe/pc/?postId=105" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-18</div><div class="title">关于一次上传密钥泄露引发的网站奔溃...</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div class="vcomment" id="vcomment"></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" data-lazy-src="https://wechatapppro-1252524126.cdn.xiaoeknow.com/apprnDA0ZDw4581/image/b_u_5b2225aa46488_oGKN7IvA/le8aileg0ew2.jpg?imageView2/2/w/200/q/60" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">月刊少女野崎君</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">59</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MonthlyGirl"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MonthlyGirl" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:guestljz@163.com" target="_blank" title="Email"><i class="fa fa-envelope"></i></a><a class="social-icon" href="https://music.163.com/#/user/home?id=372901002" target="_blank" title="Music"><i class="fas fa-music"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">如何实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">2.0.0.1.</span> <span class="toc-text">### 静态资源的分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">2.0.0.2.</span> <span class="toc-text">原理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%9B%E5%BB%BA-%E8%99%9A%E6%8B%9F-element-%E5%AF%B9%E8%B1%A1%EF%BC%9F"><span class="toc-number">2.0.0.2.1.</span> <span class="toc-text">为什么要创建 虚拟 element 对象？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">如何使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.1.</span> <span class="toc-text">配置</span></a></li></ol></li></ol></li></ol></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 月刊少女野崎君</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, <a target="_blank" rel="noopener" href="https://github.com/MonthlyGirl">月刊少女野崎君</a>!</div></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><img id="go-up-bgc" src="https://cdn.jsdelivr.net/gh/fudalijunyi/picture-bed/img/20200629182853.gif"></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'H5OI40vn1OrIOyX1wWXtE5pE-gzGzoHsz',
+      appKey: 'nD1LWd2MNch1KyAZqgk6OIUk',
+      placeholder: '来吐槽一下吧～',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script defer src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script><script defer src="/js/clearbanner.js"></script><script defer src="/js/autobanner.js"></script><script async data-pjax src="/js/randombg.js"></script><script async data-pjax src="/js/universe.js"></script><canvas defer id="universe"></canvas><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" async="async" mobile="false"></script><script>(function(){
+  const bp = document.createElement('script');
+  const curProtocol = window.location.protocol.split(':')[0];
+  if (curProtocol === 'https'){
+  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+  bp.dataset.pjax = ''
+  const s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(bp, s);
+})()</script></div></body></html>
