@@ -20,15 +20,6 @@
   </url>
   
   <url>
-    <loc>https://monthlygirl.github.io/posts/index.html</loc>
-    
-    <lastmod>2024-03-12</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://monthlygirl.github.io/posts/HTTP1.1.html</loc>
     
     <lastmod>2024-03-12</lastmod>
@@ -345,6 +336,15 @@
   
   <url>
     <loc>https://monthlygirl.github.io/posts/Event_Model.html</loc>
+    
+    <lastmod>2021-03-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://monthlygirl.github.io/posts/Module.html</loc>
     
     <lastmod>2021-03-01</lastmod>
     
